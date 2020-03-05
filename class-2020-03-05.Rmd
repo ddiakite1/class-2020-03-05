@@ -1,0 +1,30 @@
+---
+title: "class-2020-03-05"
+author: "Diassa Diakite"
+date: "3/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(googlesheets4)
+library(janitor)
+library(tidyverse)
+
+sheets_deauth()
+```
+
+``` {r }
+x <- read_sheet(ss =  "14HmwN2cEVAJHupuehCuLdwG9BXtR3COrxDgaaylLhkA") %>% 
+  clean_names() %>%
+  mutate(percent_red = (red / (red + white))*100)
+
+x %>% 
+  ggplot(aes(percent_red)) +
+    geom_histogram(bins = 20) +
+    labs(title = "Percentage of Red Beads Drawn",
+        subtitle = "Should we be suspicious of those outliers?",
+        caption = "Classroom data from 2020-03-03",
+        x = "Percentage of Red Beads Out of 25 Drawn",
+        y = "Count") 
+```
