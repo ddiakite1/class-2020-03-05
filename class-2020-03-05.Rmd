@@ -31,5 +31,34 @@ x %>%
 ```
 
 ```{r}
-urn <- tibble(bean_ID = 1:10000 , color = c(rep("red", 2000), rep("white", 8000)) )
+my_urn <- tibble(bean_ID = 1:10000 , color = c(rep("red", 2000), rep("white", 8000)) )
+
+x <- urn %>% 
+  rep_sample_n(size = 25, reps = 51) %>%  
+  group_by(replicate) %>% 
+  summarise(red_sum = sum(color == "red")) %>%  
+  mutate(perc_red = red_sum/25)
+
+x %>% 
+  ggplot(aes(perc_red)) +
+    geom_histogram(bins = 20) +
+    labs(title = "Percentage of Red Beads Drawn",
+        subtitle = "Should we be suspicious of those outliers?",
+        caption = "Simulation",
+        x = "Percentage of Red Beads Out of 25 Drawn",
+        y = "Count") 
+
+simulate_class <- function(urn){
+  urn %>% 
+  rep_sample_n(size = 25, reps = 51) %>%  
+  group_by(replicate) %>% 
+  summarise(red_sum = sum(color == "red")) %>%  
+  mutate(perc_red = red_sum/25)
+}
+
+sim_results <- tibble(sim_id = 1:3,
+                      results = map(sim_id, ~ simulate_class(my_urn)))
+
+sim_results
+
 ```
